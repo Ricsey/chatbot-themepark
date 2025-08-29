@@ -36,19 +36,23 @@ const chatSchema = z.object({
 app.post('/api/chat', async (req: Request, res: Response) => {
   const parseResult = chatSchema.safeParse(req.body);
   if (!parseResult.success) {
-    res.status(400).json(parseResult.error.format());
+    const { errors } = z.treeifyError(parseResult.error);
+    res.status(400).json({ errors: errors });
     return;
   }
 
-  const { prompt, converstionId } = req.body;
-
-  const response = await client.responses.create({
-    model: 'gpt-4o-mini',
-    input: prompt,
-    temperature: 0.2,
-    max_output_tokens: 100,
-    previous_response_id: conversations.get(converstionId),
-  });
+  try {
+    const { prompt, converstionId } = req.body;
+    const response = await client.responses.create({
+      model: 'gpt-4o-mini',
+      input: prompt,
+      temperature: 0.2,
+      max_output_tokens: 100,
+      previous_response_id: conversations.get(converstionId),
+    });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to generate response.' });
+  }
 
   conversations.set(converstionId, response.id);
 
