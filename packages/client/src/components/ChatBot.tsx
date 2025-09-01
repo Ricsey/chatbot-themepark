@@ -1,3 +1,4 @@
+import ReactMarkDown from 'react-markdown';
 import { useRef, useState, type KeyboardEvent } from 'react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
@@ -50,7 +51,7 @@ const ChatBot = () => {
             }`}
             key={index}
           >
-            {message.content}
+            <ReactMarkDown>{message.content}</ReactMarkDown>
           </p>
         ))}
       </div>
