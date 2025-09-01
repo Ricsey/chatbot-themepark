@@ -1,10 +1,11 @@
-import ReactMarkDown from 'react-markdown';
-import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
+import { useRef, useState, type KeyboardEvent } from 'react';
 import axios from 'axios';
 import { useForm } from 'react-hook-form';
 import { FaArrowUp } from 'react-icons/fa';
 import { Button } from './ui/button';
 import TypingIndicator from './chat/TypingIndicator';
+import type { Message } from './chat/ChatMessages';
+import ChatMessages from './chat/ChatMessages';
 
 type FormData = {
   prompt: string;
@@ -14,22 +15,12 @@ type ChatResponse = {
   message: string;
 };
 
-type Message = {
-  content: string;
-  role: 'user' | 'bot';
-};
-
 const ChatBot = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isBotTyping, setIsBotTyping] = useState(false);
   const [error, setError] = useState('');
-  const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const conversationId = useRef(crypto.randomUUID());
   const { register, handleSubmit, reset, formState } = useForm<FormData>();
-
-  useEffect(() => {
-    lastMessageRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
 
   const onSubmit = async ({ prompt }: FormData) => {
     try {
@@ -62,19 +53,7 @@ const ChatBot = () => {
   return (
     <div className="flex flex-col h-full">
       <div className="flex flex-col flex-1 gap-3 mb-10 overflow-y-auto">
-        {messages.map((message, index) => (
-          <div
-            className={`px-3 py-1 rounded-xl ${
-              message.role === 'user'
-                ? 'bg-blue-600 text-white self-end'
-                : 'bg-gray-100 text-black self-start'
-            }`}
-            key={index}
-            ref={index === messages.length - 1 ? lastMessageRef : null}
-          >
-            <ReactMarkDown>{message.content}</ReactMarkDown>
-          </div>
-        ))}
+        <ChatMessages messages={messages} />
         {isBotTyping && <TypingIndicator />}
         {error && <p className="text-red-500">{error}</p>}
       </div>
