@@ -19,7 +19,7 @@ This implements a chatbot for an imaginary theme park, built as a Bun monorepo w
 ### Starting Development Containers
 
 ```
-docker compose -f docker-compose.dev.yml up --build
+docker compose -f docker-compose-DEV.yml up --build
 ```
 
 Key Features:
@@ -37,7 +37,7 @@ Key Features:
 ### Stopping Development
 
 ```
-docker compose -f docker-compose.dev.yml down
+docker compose -f docker-compose-DEV.yml down
 ```
 
 ---
@@ -47,7 +47,7 @@ docker compose -f docker-compose.dev.yml down
 ### Building and Running Containers
 
 ```
-docker compose -f docker-compose.prod.yml up --build -d
+docker compose -f docker-compose-PROD.yml up --build -d
 ```
 
 Key Features:
